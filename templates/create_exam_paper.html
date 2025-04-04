@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Create Exam Paper</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Create Exam Paper</h2>
+        <form method="POST" action="{{ url_for('create_exam_paper') }}">
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" class="form-control" name="subject" placeholder="Enter subject">
+            </div>
+            <div class="form-group">
+                <label for="marks">Maximum Marks per Question</label>
+                <input type="number" class="form-control" name="marks" placeholder="Enter maximum marks">
+            </div>
+            <div class="form-group">
+                <label for="difficulty">Difficulty Level</label>
+                <select class="form-control" name="difficulty">
+                    <option value="">Any</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Generate Exam Paper</button>
+        </form>
+    </div>
+</body>
+</html>

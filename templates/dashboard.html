@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Paper Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f7f6;
+        }
+        .card {
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .content-section {
+            padding: 20px;
+        }
+        .stats-box {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .stats-box h5 {
+            margin-bottom: 15px;
+        }
+        .stats-box p {
+            font-size: 20px;
+            color: #007bff;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+        .btn-warning {
+            width: 100%;
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-lg-3">
+                <div class="stats-box">
+                    <h5>Total Marks</h5>
+                    <p>{{ total_marks }}</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="stats-box">
+                    <h5>Total Questions</h5>
+                    <p>{{ total_questions }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center bg-success text-white">
+                        <h5>Add Questions</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('add_question') }}" method="POST">
+                            <div class="mb-3">
+                                <label for="question_text" class="form-label">Question Text</label>
+                                <textarea class="form-control" id="question_text" name="question_text" rows="3" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="marks" class="form-label">Marks</label>
+                                <input type="number" class="form-control" id="marks" name="marks" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="subject" name="subject" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="difficulty" class="form-label">Difficulty</label>
+                                <select class="form-select" id="difficulty" name="difficulty" required>
+                                    <option value="Easy">Easy</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Hard">Hard</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Question</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center bg-info text-white">
+                        <h5>Generate Exam Paper</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('generate_exam_paper') }}" method="POST">
+                            <div class="mb-3">
+                                <label for="exam_title" class="form-label">Exam Title</label>
+                                <input type="text" class="form-control" id="exam_title" name="exam_title" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="duration" class="form-label">Duration (minutes)</label>
+                                <input type="number" class="form-control" id="duration" name="duration" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject_exam" class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="subject_exam" name="subject_exam" required>
+                            </div>
+                            <button type="submit" class="btn btn-success">Generate Exam Paper</button>
+                        </form>
+
+                        <!-- Button for Creating Exam Paper -->
+                        <button type="button" class="btn btn-warning mt-3" onclick="window.location.href='{{ url_for('create_exam') }}'">
+                            Create Exam Paper
+                        </button>
+
+                        <!-- Button for Uploading and Scanning PDF -->
+                        <form action="{{ url_for('upload_pdf') }}" method="POST" enctype="multipart/form-data" class="mt-3">
+                            <div class="mb-3">
+                                <label for="pdf_file" class="form-label">Upload PDF</label>
+                                <input type="file" class="form-control" id="pdf_file" name="pdf_file" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Scan and Extract Questions</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Bank Section -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center bg-primary text-white">
+                        <h5>Question Bank</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p>View all scanned and manually added questions.</p>
+                        <button class="btn btn-primary" onclick="window.location.href='{{ url_for('question_bank') }}'">
+                            View Question Bank
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Generated Papers Section -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center bg-dark text-white">
+                        <h5>View Generated Papers</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <button class="btn btn-dark" onclick="window.location.href='{{ url_for('view_exam_papers') }}'">
+                            View Papers
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Previous Papers Section -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center bg-secondary text-white">
+                        <h5>Upload Previous Papers</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('upload_previous_paper') }}'">
+                            Upload Paper
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center bg-secondary text-white">
+                        <h5>View Previous Papers</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <button class="btn btn-secondary" onclick="window.location.href='{{ url_for('view_previous_papers') }}'">
+                            View Papers
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
